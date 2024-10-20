@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isometric Pixel Farming Web Game</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body>
+    <div id="loading"></div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="tooltip"></div>
+    <div id="backdrop" class="backdrop"></div>
+    <div id="modal">
+        <div id="modal-content"></div>
+    </div>
+    <div class="btn-container">
+        <button id="inventory-btn" class="inventory-btn">Inventory</button>
+        <button id="shop-btn" class="shop-btn">Shop</button>
+        <button onclick="window.showTutorial()" class="shop-btn">?</button>
+    </div>
+    <div id="info-container" class="info-container">
+        <p>🪙 <span id="cash-display"></span></p>
+        <p>📦 <span id="storage-display"></span></p>
+    </div>
+    <script src="/assets/js/index.js" type="module"></script>
+    <!-- <script defer>
+        
+        function getTileLevel() {
+            return tilesLevel + 2;
+        }
+
+        function getTileLevelUpgradePrice() {
+            return Math.floor(2000 * (getTileLevel() + 1));
+        }
+
+        function getStorageUpgradePrice() {
+            return Math.floor(100 * maxStorageCapacity);
+        }
+
+        function getCropUpgradePrice() {
+            return Math.floor(30 * cropCost);
+        }
+
+        function getAutoHarvestUpgradePrice() {
+            return Math.floor(3000 * (autoHarvestLevel + 1));
+        }
+
+        function getAutoHarvestThrottleTime() {
+            return Math.floor(15000 - (1000 * (autoHarvestLevel - 1)));
+        }
+
+        function getAutoSeederUpgradePrice() {
+            return Math.floor(3000 * (autoSeederLevel + 1));
+        }
+
+        function getAutoSeederThrottleTime() {
+            return Math.floor(15000 - (1000 * (autoSeederLevel - 1)));
+        }
+
+
+        let autoHarvestInterval;
+        let secondsTillNextHarvest = getAutoHarvestThrottleTime() / 1000;
+        function resetAutoHarvestUITimer() {
+            secondsTillNextHarvest = getAutoHarvestThrottleTime() / 1000;
+            if (!document.getElementById('auto-harvest-timer')) {
+                const text = document.createElement('p');
+                text.id = 'auto-harvest-timer';
+                text.textContent = `🤖🌿 Harvesting in ${getAutoHarvestThrottleTime() / 1000} seconds`;
+                infoContainer.appendChild(text);
+            }
+
+            clearInterval(autoHarvestInterval);
+            const updateText = () => {
+                const text = document.getElementById('auto-harvest-timer');
+                secondsTillNextHarvest--;
+                if (secondsTillNextHarvest <= 0) {
+                    clearInterval(autoHarvestInterval);
+                    text.textContent = `🤖🌿 Ready to harvest`;
+                } else if (storage.length >= maxStorageCapacity) {
+                    clearInterval(autoHarvestInterval);
+                    text.textContent = `🤖🌿 No space left in storage`;
+                } else {
+                    text.textContent = `🤖🌿 Harvesting in ${secondsTillNextHarvest} seconds`;
+                }
+            }
+            autoHarvestInterval = setInterval(() => {
+                updateText()
+            }, 1000)
+            updateText()
+        }
+
+        if (autoHarvestLevel > 0) {
+            resetAutoHarvestUITimer();
+        }
+
+        function autoHarvest() {
+            const crop = getMatureCrop();
+            if (crop) {
+                harvestCrop(crop.x, crop.y);
+                resetAutoHarvestUITimer();
+            }
+        }
+
+        let autoSeederInterval;
+        let secondsTillNextSeed = getAutoSeederThrottleTime() / 1000;
+        function resetAutoSeederUITimer() {
+            secondsTillNextSeed = getAutoSeederThrottleTime() / 1000;
+            if (!document.getElementById('auto-seeder-timer')) {
+                const text = document.createElement('p');
+                text.id = 'auto-seeder-timer';
+                text.textContent = `🤖🌱 Seeding in ${getAutoSeederThrottleTime() / 1000} seconds`;
+                infoContainer.appendChild(text);
+            }
+
+            clearInterval(autoSeederInterval);
+            const updateText = () => {
+                const text = document.getElementById('auto-seeder-timer');
+                secondsTillNextSeed--;
+                if (secondsTillNextSeed <= 0) {
+                    clearInterval(autoSeederInterval);
+                    text.textContent = `🤖🌱 Ready to seed`;
+                } else {
+                    text.textContent = `🤖🌱 Seeding in ${secondsTillNextSeed} seconds`;
+                }
+            }
+            autoSeederInterval = setInterval(() => {
+                updateText()
+            }, 1000)
+            updateText()
+        }
+
+        if (autoSeederLevel > 0) {
+            resetAutoSeederUITimer();
+        }
+
+        
+        function autoSeed() {
+            for (let x = 0; x < GRID_SIZE; x++) {
+                for (let y = 0; y < GRID_SIZE; y++) {
+                    if (getTile(x, y).type === TILES_TYPES.DIRT) {
+                        plantCrop(x, y);
+                        resetAutoSeederUITimer();
+                        return;
+                    }
+                }
+            }
+        }
+        
+
+        function sellCrops(quantity = storage.length) {
+            const soldCrops = Math.min(quantity, storage.length);
+            cash += soldCrops * cropSellPrice;
+            storage.splice(0, soldCrops);
+            showModal(`Sold ${soldCrops} crops for $${soldCrops * cropSellPrice}`);
+            saveGameState();
+        }
+
+        function deleteCrops(quantity = storage.length) {
+            const deletedCrops = Math.min(quantity, storage.length);
+            storage.splice(0, deletedCrops);
+            showModal(`Deleted ${deletedCrops} crops from storage.`);
+            saveGameState();
+        }
+
+
+
+        let gameInit = Date.now();
+
+        function upgradeFieldLevel() {
+            const price = getTileLevelUpgradePrice() + cropCost;
+            if (cash < price) {
+                showModal('Not enough cash to upgrade field level.');
+            } else {
+                cash -= price;
+                tilesLevel++;
+                saveGameState();
+                showModal('Field level upgraded!');
+            }
+        }
+
+        function upgradeCrop() {
+            const price = getCropUpgradePrice()
+            if (cash < price + cropCost) {
+                showModal('Not enough cash to upgrade crop.');
+            } else {
+                cash -= price;
+                cropCost *= 2;
+                cropSellPrice *= 2;
+                saveGameState();
+                showModal('Crop upgraded!');
+            }
+        }
+
+        function upgradeStorage() {
+            const price = getStorageUpgradePrice();
+            if (cash < price + cropCost) {
+                showModal('Not enough cash to upgrade crop.');
+            } else {
+                cash -= price;
+                maxStorageCapacity *= 2;
+                saveGameState();
+                showModal('Storage upgraded!');
+            }
+        }
+
+        function upgradeAutoHarvest() {
+            const price = getAutoHarvestUpgradePrice();
+            if (cash < price + cropCost) {
+                showModal('Not enough cash to upgrade auto harvest.');
+            } else {
+                cash -= price;
+                autoHarvestLevel++;
+                saveGameState();
+                showModal('Auto harvest upgraded!');
+                resetAutoHarvestUITimer();
+            }
+        }
+
+        function upgradeAutoSeed() {
+            const price = getAutoSeederUpgradePrice();
+            if (cash < price + cropCost) {
+                showModal('Not enough cash to upgrade auto seed.');
+            } else {
+                cash -= price;
+                autoSeederLevel++;
+                saveGameState();
+                showModal('Auto seed upgraded!');
+                resetAutoSeederUITimer();
+            }
+        }
+    </script> -->
+</body>
+
+</html>
