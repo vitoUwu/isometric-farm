@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "jsxImportSource": "jsx-dom",
+    "jsx": "react-jsx",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "downlevelIteration": true
+  }
+}
