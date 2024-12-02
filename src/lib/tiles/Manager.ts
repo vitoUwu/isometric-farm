@@ -4,6 +4,7 @@ import BankManager from "../bank/Manager.ts";
 import { GAMESTATE_KEYS, GRID_SIZE } from "../constants.ts";
 import CropManager from "../crops/Manager.ts";
 import GameState from "../gameState.ts";
+import logger from "../logger.ts";
 import { TILES } from "./constants.ts";
 
 export type Tile = {
@@ -38,11 +39,11 @@ class TileManager {
   }
 
   static getInstance() {
-    console.time("TileManager.getInstance");
+    logger.time("TileManager.getInstance");
     if (!_instance) {
       _instance = new TileManager();
     }
-    console.timeEnd("TileManager.getInstance");
+    logger.timeEnd("TileManager.getInstance");
     return _instance;
   }
 
@@ -62,6 +63,14 @@ class TileManager {
 
     const level = 2 + this._data.fieldLevel;
     return level <= x || level <= y ? TILES.blocked : TILES.dirt;
+  }
+
+  findDirtTile() {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      for (let y = 0; y < GRID_SIZE; y++) {
+        if (this.getTile(x, y) === TILES.dirt) return { x, y };
+      }
+    }
   }
 
   get level() {

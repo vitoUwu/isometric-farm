@@ -5,6 +5,7 @@ import BankManager from "../bank/Manager";
 import { GAMESTATE_KEYS } from "../constants";
 import GameState from "../gameState";
 import { Item } from "../Item";
+import logger from "../logger";
 
 interface StorageItem {
   data: Item;
@@ -20,6 +21,7 @@ let _instance: StorageManager;
 
 class StorageManager {
   private _storage: StorageObject;
+  private static MAX_LEVEL = 27;
 
   constructor() {
     if (_instance) {
@@ -49,7 +51,7 @@ class StorageManager {
   updateCapacityDisplay() {
     const display = this.capacityDisplay;
     if (!display) {
-      return console.error("Storage capacity display not found");
+      return logger.error("Storage capacity display not found");
     }
 
     const totalStoredItems = this.getTotalStoredItems();
@@ -62,11 +64,11 @@ class StorageManager {
   }
 
   static getInstance() {
-    console.time("StorageManager.getInstance");
+    logger.time("StorageManager.getInstance");
     if (!_instance) {
       _instance = new StorageManager();
     }
-    console.timeEnd("StorageManager.getInstance");
+    logger.timeEnd("StorageManager.getInstance");
     return _instance;
   }
 
@@ -97,7 +99,7 @@ class StorageManager {
 
   storeItem(item: StorageItem) {
     if (!this.willFit(item)) {
-      return console.error(`Item ${item.data.id} will not fit in storage`);
+      return logger.error(`Item ${item.data.id} will not fit in storage`);
     }
 
     if (this.hasItem(item.data.id)) {
@@ -112,7 +114,7 @@ class StorageManager {
 
   removeItem(id: string, quantity: number) {
     if (!this.hasItem(id)) {
-      return console.error(`Item ${id} not found in storage`);
+      return logger.error(`Item ${id} not found in storage`);
     }
 
     this._storage.items[id].quantity -= quantity;
@@ -132,16 +134,7 @@ class StorageManager {
 
   upgradeCost(level?: number) {
     level = level ?? this._storage.level;
-    switch (level) {
-      case 1:
-        return 100;
-      case 2:
-        return 200;
-      case 3:
-        return 300;
-      default:
-        return 0;
-    }
+    return level * 1000;
   }
 
   upgrade() {
@@ -165,7 +158,7 @@ class StorageManager {
   }
 
   isMaxed() {
-    return this.level >= 3;
+    return this.level >= StorageManager.MAX_LEVEL;
   }
 }
 

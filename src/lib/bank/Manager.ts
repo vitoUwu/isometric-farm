@@ -1,5 +1,6 @@
 import { GAMESTATE_KEYS } from "../constants";
 import GameState from "../gameState";
+import logger from "../logger";
 
 interface Bank {
   balance: number;
@@ -26,11 +27,11 @@ class BankManager {
   }
 
   static getInstance() {
-    console.time("BankManager.getInstance");
+    logger.time("BankManager.getInstance");
     if (!_instance) {
       _instance = new BankManager();
     }
-    console.timeEnd("BankManager.getInstance");
+    logger.timeEnd("BankManager.getInstance");
     return _instance;
   }
 
@@ -41,7 +42,7 @@ class BankManager {
   updateBalanceDisplay() {
     const display = this.balanceDisplay;
     if (!display) {
-      return console.error("Bank balance display not found");
+      return logger.error("Bank balance display not found");
     }
     display.textContent = balanceFormatter.format(this.balance);
   }

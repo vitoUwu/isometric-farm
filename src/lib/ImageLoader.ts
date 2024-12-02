@@ -1,11 +1,13 @@
+import logger from "./logger";
+
 class ImageLoader {
   cache = {};
 
   public load(path: string) {
-    console.time(`Loading image ${path}`);
+    logger.time(`Loading image ${path}`);
 
     if (this.cache[path]) {
-      console.timeEnd(`Loading image ${path}`);
+      logger.timeEnd(`Loading image ${path}`);
       return Promise.resolve(this.cache[path]);
     }
 
@@ -13,7 +15,7 @@ class ImageLoader {
       const img = new Image();
       img.src = path;
       img.onload = () => {
-        console.timeEnd(`Loading image ${path}`);
+        logger.timeEnd(`Loading image ${path}`);
         this.cache[path] = img;
         resolve(img);
       };

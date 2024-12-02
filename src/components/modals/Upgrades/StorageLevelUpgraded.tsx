@@ -1,6 +1,7 @@
-import { closeModal } from "..";
+import { renderModal } from "..";
 import StorageManager from "../../../lib/storage/Manager.ts";
 import Button from "../../ui/Button";
+import Shop from "../Shop/index.tsx";
 
 export default function StorageLevelUpgraded() {
   return (
@@ -12,7 +13,7 @@ export default function StorageLevelUpgraded() {
       <Button
         variant="success"
         style="margin-top: 12px"
-        onClick={() => closeModal()}
+        onClick={() => renderModal(Shop())}
       >
         Yay!
       </Button>

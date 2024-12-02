@@ -1,4 +1,5 @@
 import { DELETE_KEYS, GAMESTATE_KEYS } from "./constants.ts";
+import logger from "./logger.ts";
 import { throttle } from "./utils.ts";
 
 let _instance: GameState;
@@ -13,7 +14,7 @@ class GameState {
   // LOAD AND SAVE MODULES
   private _importedModulesCache: Record<string, { save: () => void }> = {};
   private _saveGameState = throttle(async () => {
-    console.time("Saving state");
+    logger.time("Saving state");
 
     // avoid circular dependency
     if (!this._importedModulesCache.TilesManager) {
@@ -43,7 +44,7 @@ class GameState {
     for (const key of Object.values(DELETE_KEYS)) {
       localStorage.removeItem(key);
     }
-    console.timeEnd("Saving state");
+    logger.timeEnd("Saving state");
   }, 1000);
 
   constructor() {
@@ -53,11 +54,11 @@ class GameState {
   }
 
   static getInstance() {
-    console.time("GameState.getInstance");
+    logger.time("GameState.getInstance");
     if (!_instance) {
       _instance = new GameState();
     }
-    console.timeEnd("GameState.getInstance");
+    logger.timeEnd("GameState.getInstance");
     return _instance;
   }
 
@@ -121,13 +122,13 @@ class GameState {
       }
 
       if (validator && !validator(value)) {
-        console.error(`Invalid value for key: ${key}`);
+        logger.error(`Invalid value for key: ${key}`);
         return defaultValue;
       }
 
       return value;
     } catch (error) {
-      console.error(`Error loading game state for key: ${key}`, error);
+      logger.error(`Error loading game state for key: ${key}`, error);
       return defaultValue;
     }
   }

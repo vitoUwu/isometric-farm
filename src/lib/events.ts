@@ -1,10 +1,25 @@
 import Camera from "./camera.ts";
 import Canvas from "./canvas.ts";
 import GameState from "./gameState.ts";
+import logger from "./logger.ts";
 
 let _instance: Events;
 
 class Events {
+  private konamiCode: string[] = [
+    "ArrowUp",
+    "ArrowUp",
+    "ArrowDown",
+    "ArrowDown",
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowLeft",
+    "ArrowRight",
+    "b",
+    "a",
+  ];
+  private konamiIndex: number = 0;
+
   constructor() {
     if (_instance) {
       throw new Error("Events already initialized");
@@ -19,7 +34,7 @@ class Events {
   }
 
   setupEvents(canvas: HTMLCanvasElement) {
-    console.time("Events setup");
+    logger.time("Events setup");
     // Canvas Events
     canvas.addEventListener("mousedown", (e) => {
       GameState.updateMouseState(e);
@@ -61,8 +76,23 @@ class Events {
       } else if (e.key === "ArrowRight") {
         Camera.cameraX += speed;
       }
+
+      // Verificar código Konami
+      if (
+        e.key.toLowerCase() === this.konamiCode[this.konamiIndex].toLowerCase()
+      ) {
+        this.konamiIndex++;
+
+        if (this.konamiIndex === this.konamiCode.length) {
+          localStorage.setItem("dev", "true");
+          localStorage.setItem("debug", "true");
+          window.location.reload();
+        }
+      } else {
+        this.konamiIndex = 0;
+      }
     });
-    console.timeEnd("Events setup");
+    logger.timeEnd("Events setup");
   }
 }
 

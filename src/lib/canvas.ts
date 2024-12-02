@@ -12,6 +12,7 @@ import {
 import CropManager from "./crops/Manager.ts";
 import GameState from "./gameState.ts";
 import imageLoader from "./ImageLoader.ts";
+import logger from "./logger.ts";
 // import { getRobotById } from "./robots/index.js";
 // import { USER_ID } from "./robots/user.js";
 import { TILE_TYPES, TILES } from "./tiles/constants.ts";
@@ -30,11 +31,11 @@ class Canvas {
   }
 
   static getInstance() {
-    console.time("Canvas.getInstance");
+    logger.time("Canvas.getInstance");
     if (!_instance) {
       _instance = new Canvas();
     }
-    console.timeEnd("Canvas.getInstance");
+    logger.timeEnd("Canvas.getInstance");
     return _instance;
   }
 
@@ -47,14 +48,14 @@ class Canvas {
   }
 
   setupCanvas(value: HTMLCanvasElement) {
-    console.time("Canvas.setupCanvas");
+    logger.time("Canvas.setupCanvas");
     this._canvas = value;
     this._ctx = value.getContext("2d");
 
     this._canvas.width = window.innerWidth;
     this._canvas.height = window.innerHeight;
 
-    console.timeEnd("Canvas.setupCanvas");
+    logger.timeEnd("Canvas.setupCanvas");
   }
 
   drawTile(x: number, y: number, tile: Tile, _ctx?: CanvasRenderingContext2D) {
@@ -238,7 +239,7 @@ class Canvas {
       throw new Error("Canvas not found. You forgot to set the canvas?");
     }
 
-    if (e.button === MOUSE_BUTTONS.left) {
+    if (e.button === MOUSE_BUTTONS.left && GameState.isDragging) {
       const scale = Camera.scale;
       const cameraX = Camera.cameraX;
       const cameraY = Camera.cameraY;

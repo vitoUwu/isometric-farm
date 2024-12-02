@@ -1,4 +1,7 @@
-console.time("Game Loading time");
+import logger from "./lib/logger.ts";
+logger.debug("Debugging is enabled");
+logger.time("Game Loading time");
+
 import App from "./App.tsx";
 import BankManager from "./lib/bank/Manager.ts";
 import Canvas from "./lib/canvas.ts";
@@ -12,6 +15,7 @@ import "./styles.css";
 document.querySelector("#app")!.appendChild(App());
 
 document.addEventListener("DOMContentLoaded", async () => {
+  logger.debug("DOMContentLoaded");
   await ImageLoader.loadImages();
   StorageManager.updateCapacityDisplay();
   BankManager.updateBalanceDisplay();
@@ -27,7 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }, 10000);
 
   document.getElementById("loading")?.setAttribute("data-loaded", "true");
-  console.timeEnd("Game Loading time");
+  logger.timeEnd("Game Loading time");
 });
 
 function gameLoop() {

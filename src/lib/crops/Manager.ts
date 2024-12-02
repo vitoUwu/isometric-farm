@@ -8,6 +8,7 @@ import Canvas from "../canvas";
 import { GAMESTATE_KEYS } from "../constants";
 import GameState from "../gameState";
 import { Item, ItemType } from "../Item";
+import logger from "../logger";
 import StorageManager from "../storage/Manager";
 import { TILE_TYPES } from "../tiles/constants";
 import TileManager from "../tiles/Manager";
@@ -43,11 +44,11 @@ class CropManager {
   }
 
   static getInstance() {
-    console.time("CropManager.getInstance");
+    logger.time("CropManager.getInstance");
     if (!_instance) {
       _instance = new CropManager();
     }
-    console.timeEnd("CropManager.getInstance");
+    logger.timeEnd("CropManager.getInstance");
     return _instance;
   }
 
@@ -144,8 +145,12 @@ class CropManager {
     }
   }
 
-  getMatureCrop() {
-    return this._crops.crops.find((crop) => crop.isReadyToHarvest);
+  getMatureCrop(): Crop & { index: number } | undefined {
+    const index = this._crops.crops.findIndex((crop) => crop.isReadyToHarvest);
+    if (index !== -1) {
+      return { ...this._crops.crops[index], index };
+    }
+    return undefined;
   }
 
   hasMatureCrop() {
