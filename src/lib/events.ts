@@ -19,6 +19,7 @@ class Events {
   }
 
   setupEvents(canvas: HTMLCanvasElement) {
+    console.time("Events setup");
     // Canvas Events
     canvas.addEventListener("mousedown", (e) => {
       GameState.updateMouseState(e);
@@ -61,6 +62,7 @@ class Events {
         Camera.cameraX += speed;
       }
     });
+    console.timeEnd("Events setup");
   }
 }
 

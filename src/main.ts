@@ -1,3 +1,4 @@
+console.time("Game Loading time");
 import App from "./App.tsx";
 import BankManager from "./lib/bank/Manager.ts";
 import Canvas from "./lib/canvas.ts";
@@ -24,6 +25,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   setInterval(() => {
     GameState.saveGameState();
   }, 10000);
+
+  document.getElementById("loading")?.setAttribute("data-loaded", "true");
+  console.timeEnd("Game Loading time");
 });
 
 function gameLoop() {

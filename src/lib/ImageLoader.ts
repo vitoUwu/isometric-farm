@@ -37,8 +37,6 @@ class ImageLoader {
       this.load("/assets/images/robot/left-top.png"),
       this.load("/assets/images/robot/right-top.png"),
     ]);
-
-    document.getElementById("loading")?.setAttribute("data-loaded", "true");
   }
 }
 
