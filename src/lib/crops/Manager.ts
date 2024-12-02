@@ -120,7 +120,7 @@ class CropManager {
     const crop = this.findCrop(x, y);
 
     if (!crop) {
-      return console.error(`Crop at ${x}, ${y} not found`);
+      return;
     }
 
     if (!StorageManager.willFit(1)) {
