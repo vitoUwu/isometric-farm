@@ -7,8 +7,9 @@ import {
   TILE_WIDTH,
 } from "./constants.js";
 import CropManager from "./crops/Manager";
-import TileManager from "./tiles/Manager";
+import GameState from "./gameState.ts";
 import { TILE_TYPES } from "./tiles/constants";
+import TileManager from "./tiles/Manager";
 
 export function updateTooltip() {
   const tooltip = document.getElementById("tooltip");
@@ -16,8 +17,8 @@ export function updateTooltip() {
 
   const cameraX = camera.cameraX;
   const cameraY = camera.cameraY;
-  const lastMouseX = camera.lastMouseX;
-  const lastMouseY = camera.lastMouseY;
+  const lastMouseX = GameState.lastMouseX;
+  const lastMouseY = GameState.lastMouseY;
   const scale = camera.scale;
 
   const mouseX = (lastMouseX - rect.left) / scale + cameraX;

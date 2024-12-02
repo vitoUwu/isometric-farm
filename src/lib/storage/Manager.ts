@@ -3,7 +3,7 @@ import NotEnoughCash from "../../components/modals/Upgrades/NotEnoughCash";
 import StorageLevelUpgraded from "../../components/modals/Upgrades/StorageLevelUpgraded";
 import BankManager from "../bank/Manager";
 import { GAMESTATE_KEYS } from "../constants";
-import { loadGameState } from "../gameState";
+import GameState from "../gameState";
 import { Item } from "../Item";
 
 interface StorageItem {
@@ -27,7 +27,7 @@ class StorageManager {
         "Attempted to create a second instance of StorageManager",
       );
     }
-    this._storage = loadGameState(GAMESTATE_KEYS.STORAGE, {
+    this._storage = GameState.loadGameState(GAMESTATE_KEYS.STORAGE, {
       level: 1,
       items: {},
     });

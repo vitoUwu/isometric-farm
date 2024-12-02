@@ -3,7 +3,7 @@ import { closeModal, renderModal } from "../../components/modals/index.tsx";
 import BankManager from "../bank/Manager.ts";
 import { GAMESTATE_KEYS, GRID_SIZE } from "../constants.ts";
 import CropManager from "../crops/Manager.ts";
-import { loadGameState } from "../gameState.ts";
+import GameState from "../gameState.ts";
 import { TILES } from "./constants.ts";
 
 export type Tile = {
@@ -26,7 +26,7 @@ class TileManager {
       throw new Error("Attempted to create a second instance of TileManager");
     }
 
-    this._data = loadGameState(
+    this._data = GameState.loadGameState(
       GAMESTATE_KEYS.TILES,
       {
         fieldLevel: 1,
@@ -35,9 +35,6 @@ class TileManager {
         typeof value === "object" && !Array.isArray(value) &&
         "fieldLevel" in value && typeof value.fieldLevel === "number",
     );
-
-    console.log(this._data);
-    console.log(this.tileLevelUpgradePrice());
   }
 
   static getInstance() {

@@ -6,7 +6,7 @@ import NotEnoughCash from "../../components/modals/Upgrades/NotEnoughCash";
 import BankManager from "../bank/Manager";
 import Canvas from "../canvas";
 import { GAMESTATE_KEYS } from "../constants";
-import gameState, { loadGameState } from "../gameState";
+import GameState from "../gameState";
 import { Item, ItemType } from "../Item";
 import StorageManager from "../storage/Manager";
 import { TILE_TYPES } from "../tiles/constants";
@@ -36,7 +36,7 @@ class CropManager {
     if (_instance) {
       throw new Error("Attempted to create a second instance of CropManager");
     }
-    this._crops = loadGameState(GAMESTATE_KEYS.CROPS, {
+    this._crops = GameState.loadGameState(GAMESTATE_KEYS.CROPS, {
       crops: [],
       level: 1,
     });
@@ -125,7 +125,7 @@ class CropManager {
 
     if (!StorageManager.willFit(1)) {
       renderModal(StorageFull());
-      gameState.action = null;
+      GameState.action = null;
       return;
     }
 

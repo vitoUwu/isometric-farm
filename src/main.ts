@@ -1,7 +1,8 @@
 import App from "./App.tsx";
 import BankManager from "./lib/bank/Manager.ts";
 import Canvas from "./lib/canvas.ts";
-import gameState from "./lib/gameState.ts";
+import Events from "./lib/events.ts";
+import GameState from "./lib/gameState.ts";
 import ImageLoader from "./lib/ImageLoader.ts";
 import StorageManager from "./lib/storage/Manager.ts";
 import { updateTooltip } from "./lib/tooltip.ts";
@@ -14,14 +15,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   StorageManager.updateCapacityDisplay();
   BankManager.updateBalanceDisplay();
 
-  Canvas.setupCanvas(
-    document.getElementById("gameCanvas") as HTMLCanvasElement,
-  );
+  const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;
+  Canvas.setupCanvas(canvas);
+  Events.setupEvents(canvas);
 
   gameLoop();
 
   setInterval(() => {
-    gameState.saveGameState();
+    GameState.saveGameState();
   }, 10000);
 });
 

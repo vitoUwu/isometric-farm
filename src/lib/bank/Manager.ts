@@ -1,5 +1,5 @@
 import { GAMESTATE_KEYS } from "../constants";
-import { loadGameState } from "../gameState";
+import GameState from "../gameState";
 
 interface Bank {
   balance: number;
@@ -14,7 +14,7 @@ class BankManager {
     if (_instance) {
       throw new Error("Attempted to create a second instance of BankManager");
     }
-    this._bank = loadGameState(GAMESTATE_KEYS.BANK, {
+    this._bank = GameState.loadGameState(GAMESTATE_KEYS.BANK, {
       balance: 1000,
     });
   }

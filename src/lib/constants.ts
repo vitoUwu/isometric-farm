@@ -3,14 +3,15 @@ export const GAMESTATE_KEYS = {
   STORAGE: "storage",
   BANK: "bank",
   TILES: "tiles",
-  CAMERA_X: "cameraX",
-  CAMERA_Y: "cameraY",
-  SCALE: "scale",
   AUTO_HARVEST_LEVEL: "autoHarvestLevel",
   AUTO_SEEDER_LEVEL: "autoSeederLevel",
+  CAMERA: "camera",
 } as const;
 
 export const DELETE_KEYS = {
+  CAMERA_X: "cameraX",
+  CAMERA_Y: "cameraY",
+  SCALE: "scale",
   CASH: "cash",
   CROP_LEVEL: "cropLevel",
   TILES_LEVEL: "tilesLevel",

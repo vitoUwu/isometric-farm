@@ -1,38 +1,47 @@
 import Canvas from "./canvas.js";
 import { GAMESTATE_KEYS, MOUSE_BUTTONS } from "./constants.ts";
-import gameState, { loadGameState } from "./gameState.ts";
+import GameState from "./gameState.ts";
+
+let _instance: Camera;
 
 class Camera {
-  private _cameraX: number = loadGameState(GAMESTATE_KEYS.CAMERA_X) || 0;
-  private _cameraY: number = loadGameState(GAMESTATE_KEYS.CAMERA_Y) || 0;
-  private _scale: number = loadGameState(GAMESTATE_KEYS.SCALE) || 1;
-
-  private _isDragging: boolean = false;
-  private _lastMouseX: number = 0;
-  private _lastMouseY: number = 0;
-  private _buttonDown: number | null = null;
+  private _cameraX: number = 0;
+  private _cameraY: number = 0;
+  private _scale: number = 1;
 
   constructor() {
-    document.addEventListener("keydown", (e) => {
-      const speed = 10;
-      if (e.key === "ArrowUp") {
-        this.cameraY -= speed;
-      } else if (e.key === "ArrowDown") {
-        this.cameraY += speed;
-      } else if (e.key === "ArrowLeft") {
-        this.cameraX -= speed;
-      } else if (e.key === "ArrowRight") {
-        this.cameraX += speed;
-      }
-    });
+    if (_instance) {
+      throw new Error("Camera already initialized");
+    }
+
+    const data = GameState.loadGameState(GAMESTATE_KEYS.CAMERA, {
+      cameraX: 0,
+      cameraY: 0,
+      scale: 1,
+    }, Camera.validateState);
+
+    this.cameraX = data.cameraX;
+    this.cameraY = data.cameraY;
+    this.scale = data.scale;
   }
 
-  get buttonDown() {
-    return this._buttonDown;
+  static getInstance() {
+    if (!_instance) {
+      _instance = new Camera();
+    }
+    return _instance;
   }
 
-  set buttonDown(value) {
-    this._buttonDown = value;
+  static validateState(value: unknown) {
+    return (
+      typeof value === "object" &&
+      "cameraX" in value &&
+      "cameraY" in value &&
+      "scale" in value &&
+      typeof value.cameraX === "number" &&
+      typeof value.cameraY === "number" &&
+      typeof value.scale === "number"
+    );
   }
 
   get cameraX() {
@@ -59,30 +68,6 @@ class Camera {
     this._scale = value;
   }
 
-  get isDragging() {
-    return this._isDragging;
-  }
-
-  set isDragging(value) {
-    this._isDragging = value;
-  }
-
-  get lastMouseX() {
-    return this._lastMouseX;
-  }
-
-  set lastMouseX(value) {
-    this._lastMouseX = value;
-  }
-
-  get lastMouseY() {
-    return this._lastMouseY;
-  }
-
-  set lastMouseY(value) {
-    this._lastMouseY = value;
-  }
-
   mouseX(clientX: number) {
     const scale = this._scale;
     const cameraX = this._cameraX;
@@ -99,31 +84,16 @@ class Camera {
     return (clientY - rect.top) / scale + cameraY;
   }
 
-  mouseUp() {
-    this.isDragging = false;
-    this.buttonDown = null;
-    gameState.saveGameState();
-  }
-
-  mouseDown(e: MouseEvent) {
-    this.buttonDown = e.button;
-    this.lastMouseX = e.clientX;
-    this.lastMouseY = e.clientY;
-  }
-
-  mouseMove(e: MouseEvent) {
-    if (typeof this.buttonDown === "number") {
-      this.isDragging = true;
+  moveCamera(e: MouseEvent) {
+    if (GameState.buttonDown === MOUSE_BUTTONS.middle) {
+      this.cameraX += (GameState.lastMouseX - e.clientX) / this.scale;
+      this.cameraY += (GameState.lastMouseY - e.clientY) / this.scale;
     }
-    if (this.buttonDown === MOUSE_BUTTONS.middle) {
-      this.cameraX += (this.lastMouseX - e.clientX) / this.scale;
-      this.cameraY += (this.lastMouseY - e.clientY) / this.scale;
-    }
-    this.lastMouseX = e.clientX;
-    this.lastMouseY = e.clientY;
+    GameState.lastMouseX = e.clientX;
+    GameState.lastMouseY = e.clientY;
   }
 
-  wheel(e: WheelEvent) {
+  applyZoom(e: WheelEvent) {
     e.preventDefault();
     const zoomSpeed = 0.1;
     if (e.deltaY < 0) {
@@ -132,8 +102,17 @@ class Camera {
       this.scale /= 1 + zoomSpeed;
     }
   }
+
+  save() {
+    localStorage.setItem(
+      GAMESTATE_KEYS.CAMERA,
+      JSON.stringify({
+        cameraX: this.cameraX,
+        cameraY: this.cameraY,
+        scale: this.scale,
+      }),
+    );
+  }
 }
 
-const camera = new Camera();
-
-export default camera;
+export default Camera.getInstance();
