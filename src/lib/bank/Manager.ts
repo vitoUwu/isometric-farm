@@ -7,6 +7,12 @@ interface Bank {
 
 let _instance: BankManager;
 
+const balanceFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0,
+});
+
 class BankManager {
   private _bank: Bank;
 
@@ -37,7 +43,7 @@ class BankManager {
     if (!display) {
       return console.error("Bank balance display not found");
     }
-    display.textContent = `$${this.balance}`;
+    display.textContent = balanceFormatter.format(this.balance);
   }
 
   get balance() {
