@@ -6,7 +6,7 @@ interface Props {
 export default function SoldCrops({ quantity, price }: Props) {
   return (
     <div>
-      Sold {quantity} crops for ${quantity * price}
+      Sold {quantity} crops for ${price}
     </div>
   );
 }
