@@ -9,7 +9,7 @@ import gameState, { loadGameState } from "../gameState";
 import { Item, ItemType } from "../Item";
 import StorageManager from "../storage/Manager";
 import { TILE_TYPES } from "../tiles/constants";
-import { getTile, toIso } from "../tiles/Manager";
+import TileManager from "../tiles/Manager";
 
 interface Crop {
   x: number;
@@ -93,7 +93,7 @@ class CropManager {
     if (
       this.canSeed() &&
       !this.hasCropAt(x, y) &&
-      getTile(x, y)?.type === TILE_TYPES.DIRT
+      TileManager.getTile(x, y).type === TILE_TYPES.DIRT
     ) {
       BankManager.withdraw(this.cropCost());
       const iso = toIso(x, y);

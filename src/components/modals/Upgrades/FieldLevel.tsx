@@ -1,4 +1,4 @@
-import gameState from "../../../lib/gameState.ts";
+import TileManager from "../../../lib/tiles/Manager.ts";
 import Button from "../../ui/Button.tsx";
 
 export default function FieldLevel() {
@@ -6,17 +6,16 @@ export default function FieldLevel() {
     <>
       <h2>Upgrade Field Level</h2>
       <p>
-        Your current field level is{" "}
-        {gameState.tilesLevel}x{gameState.tilesLevel}.
+        Your current field level is {TileManager.level}x{TileManager.level}.
       </p>
       <p>
-        You can upgrade to a{" "}
-        {gameState.tilesLevel + 1}x{gameState.tilesLevel + 1}{" "}
-        field level by spending ${gameState.tileLevelUpgradePrice}.
+        You can upgrade to a {TileManager.level + 1}x{TileManager.level + 1}
+        {" "}
+        field level by spending ${TileManager.tileLevelUpgradePrice()}.
       </p>
       <Button
         variant="success"
-        onClick={gameState.upgradeFieldLevel}
+        onClick={() => TileManager.upgradeFieldLevel()}
         style="margin-top: 12px"
       >
         Upgrade

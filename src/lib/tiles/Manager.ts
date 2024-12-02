@@ -1,83 +1,93 @@
-import imageLoader from "../ImageLoader.ts";
-import { GRID_SIZE, TILE_HEIGHT, TILE_WIDTH } from "../constants.ts";
+import NotEnoughCash from "../../components/modals/Upgrades/NotEnoughCash.tsx";
+import { closeModal, renderModal } from "../../components/modals/index.tsx";
+import BankManager from "../bank/Manager.ts";
+import { GAMESTATE_KEYS, GRID_SIZE } from "../constants.ts";
 import CropManager from "../crops/Manager.ts";
-import gameState from "../gameState.ts";
-import { TILE_TYPES, TILES } from "./constants.ts";
+import { loadGameState } from "../gameState.ts";
+import { TILES } from "./constants.ts";
 
-type Tile = {
+export type Tile = {
   color: string;
   path: string;
   type: string;
 };
 
-export function fromIso(x: number, y: number) {
-  const offsetX = x - TILE_WIDTH / 2;
-  const isoX = offsetX / TILE_WIDTH + y / TILE_HEIGHT;
-  const isoY = y / TILE_HEIGHT - offsetX / TILE_WIDTH;
-
-  const tileX = Math.floor(isoX);
-  const tileY = Math.floor(isoY);
-
-  return { x: tileX, y: tileY };
+interface Data {
+  fieldLevel: number;
 }
 
-export function toIso(x: number, y: number) {
-  return {
-    x: ((x - y) * TILE_WIDTH) / 2,
-    y: ((x + y) * TILE_HEIGHT) / 2,
-  };
-}
+let _instance: TileManager;
 
-export function getTile(x: number, y: number) {
-  if (x < 0 || y < 0 || x >= GRID_SIZE || y >= GRID_SIZE) {
-    return TILES.grass;
-  }
+class TileManager {
+  private _data: Data;
 
-  const crop = CropManager.findCrop(x, y);
-  if (crop?.isReadyToHarvest) {
-    return TILES.mature;
-  }
-  if (crop) {
-    return TILES.seedling;
-  }
-
-  const level = 2 + gameState.tilesLevel;
-  return level <= x || level <= y ? TILES.blocked : TILES.dirt;
-}
-
-export function hasDirtTiles() {
-  return getDirtTile() !== undefined;
-}
-
-export function getDirtTile() {
-  for (let x = 0; x < GRID_SIZE; x++) {
-    for (let y = 0; y < GRID_SIZE; y++) {
-      const tile = getTile(x, y);
-      if (tile.type === TILE_TYPES.DIRT) {
-        return tile;
-      }
+  constructor() {
+    if (_instance) {
+      throw new Error("Attempted to create a second instance of TileManager");
     }
+
+    this._data = loadGameState(
+      GAMESTATE_KEYS.TILES,
+      {
+        fieldLevel: 1,
+      },
+      (value) =>
+        typeof value === "object" && !Array.isArray(value) &&
+        "fieldLevel" in value && typeof value.fieldLevel === "number",
+    );
+
+    console.log(this._data);
+    console.log(this.tileLevelUpgradePrice());
+  }
+
+  static getInstance() {
+    console.time("TileManager.getInstance");
+    if (!_instance) {
+      _instance = new TileManager();
+    }
+    console.timeEnd("TileManager.getInstance");
+    return _instance;
+  }
+
+  save() {
+    localStorage.setItem(GAMESTATE_KEYS.TILES, JSON.stringify(this._data));
+  }
+
+  getTile(x: number, y: number) {
+    if (x < 0 || y < 0 || x >= GRID_SIZE || y >= GRID_SIZE) {
+      return TILES.grass;
+    }
+
+    const crop = CropManager.findCrop(x, y);
+    if (crop) {
+      return crop.isReadyToHarvest ? TILES.mature : TILES.seedling;
+    }
+
+    const level = 2 + this._data.fieldLevel;
+    return level <= x || level <= y ? TILES.blocked : TILES.dirt;
+  }
+
+  get level() {
+    return this._data.fieldLevel;
+  }
+
+  upgradeFieldLevel() {
+    const price = this.tileLevelUpgradePrice();
+    if (BankManager.balance >= price) {
+      BankManager.withdraw(price);
+      this._data.fieldLevel++;
+      closeModal();
+    } else {
+      renderModal(NotEnoughCash());
+    }
+
+    this.save();
+    BankManager.save();
+  }
+
+  tileLevelUpgradePrice() {
+    return this._data.fieldLevel * 1000;
   }
 }
 
-export function drawTile(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  tile: Tile,
-) {
-  const image = !!tile.path && imageLoader.get(tile.path);
-  if (image) {
-    ctx.drawImage(image, x, y, TILE_WIDTH, TILE_HEIGHT);
-  } else {
-    ctx.fillStyle = tile.color;
-    ctx.beginPath();
-    ctx.moveTo(x, y + TILE_HEIGHT / 2);
-    ctx.lineTo(x + TILE_WIDTH / 2, y);
-    ctx.lineTo(x + TILE_WIDTH, y + TILE_HEIGHT / 2);
-    ctx.lineTo(x + TILE_WIDTH / 2, y + TILE_HEIGHT);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-  }
-}
+export default TileManager.getInstance();

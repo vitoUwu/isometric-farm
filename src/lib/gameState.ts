@@ -1,5 +1,3 @@
-import { closeModal, renderModal } from "../components/modals/index.tsx";
-import NotEnoughCash from "../components/modals/Upgrades/NotEnoughCash.tsx";
 import BankManager from "./bank/Manager.ts";
 import camera from "./camera.ts";
 import { DELETE_KEYS, GAMESTATE_KEYS } from "./constants.ts";
@@ -8,7 +6,6 @@ import StorageManager from "./storage/Manager.ts";
 import { throttle } from "./utils.ts";
 
 class GameState {
-  private _tilesLevel: number = loadGameState(GAMESTATE_KEYS.TILES_LEVEL, 1);
   private _autoHarvestLevel: number = loadGameState(
     GAMESTATE_KEYS.AUTO_HARVEST_LEVEL,
     0,
@@ -31,14 +28,6 @@ class GameState {
     this._action = value;
   }
 
-  get tilesLevel() {
-    return this._tilesLevel;
-  }
-
-  set tilesLevel(value) {
-    this._tilesLevel = value;
-  }
-
   get autoHarvestLevel() {
     return this._autoHarvestLevel;
   }
@@ -57,20 +46,6 @@ class GameState {
 
   get saveGameState() {
     return saveGameState;
-  }
-
-  get tileLevelUpgradePrice() {
-    return this.tilesLevel * 1000;
-  }
-
-  upgradeFieldLevel() {
-    if (BankManager.balance >= this.tileLevelUpgradePrice) {
-      BankManager.withdraw(this.tileLevelUpgradePrice);
-      this.tilesLevel++;
-      closeModal();
-    } else {
-      renderModal(NotEnoughCash());
-    }
   }
 }
 
@@ -97,10 +72,6 @@ const saveGameState = throttle(() => {
   localStorage.setItem(GAMESTATE_KEYS.CAMERA_X, JSON.stringify(camera.cameraX));
   localStorage.setItem(GAMESTATE_KEYS.CAMERA_Y, JSON.stringify(camera.cameraY));
   localStorage.setItem(GAMESTATE_KEYS.SCALE, JSON.stringify(camera.scale));
-  localStorage.setItem(
-    GAMESTATE_KEYS.TILES_LEVEL,
-    JSON.stringify(gameState.tilesLevel),
-  );
   localStorage.setItem(
     GAMESTATE_KEYS.AUTO_HARVEST_LEVEL,
     JSON.stringify(gameState.autoHarvestLevel),
