@@ -1,6 +1,6 @@
 import App from "./App.tsx";
 import BankManager from "./lib/bank/Manager.ts";
-import { canvas, ctx, drawGrid, setupCanvas } from "./lib/canvas.ts";
+import Canvas from "./lib/canvas.ts";
 import gameState from "./lib/gameState.ts";
 import ImageLoader from "./lib/ImageLoader.ts";
 import StorageManager from "./lib/storage/Manager.ts";
@@ -13,7 +13,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   await ImageLoader.loadImages();
   StorageManager.updateCapacityDisplay();
   BankManager.updateBalanceDisplay();
-  setupCanvas();
+
+  Canvas.setupCanvas(
+    document.getElementById("gameCanvas") as HTMLCanvasElement,
+  );
+
   gameLoop();
 
   setInterval(() => {
@@ -22,8 +26,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function gameLoop() {
-  ctx().clearRect(0, 0, canvas.current!.width, canvas.current!.height);
-  drawGrid();
+  if (!Canvas.ctx) {
+    throw new Error("Canvas context not found. You forgot to set the canvas?");
+  }
+  Canvas.ctx.clearRect(0, 0, Canvas.canvas.width, Canvas.canvas.height);
+  Canvas.drawGrid();
   updateTooltip();
   // if (secondsTillNextHarvest === 0 && hasMatureCrop() && storage.length < maxStorageCapacity) {
   //   autoHarvest();

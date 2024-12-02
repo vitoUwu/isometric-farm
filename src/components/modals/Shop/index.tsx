@@ -16,9 +16,10 @@ export default function Shop() {
         name={`Crop - Level ${CropManager.level}`}
         description={CropManager.isMaxed()
           ? `Maxed out`
-          : `Seed Cost: $${CropManager.cropCost()} -> $${CropManager.cropCost(
-            CropManager.level + 1,
-          )
+          : `Seed Cost: $${CropManager.cropCost()} -> $${
+            CropManager.cropCost(
+              CropManager.level + 1,
+            )
           }`}
         disabled={CropManager.isMaxed()}
         price={CropManager.cropSellingPrice()}
@@ -26,7 +27,9 @@ export default function Shop() {
       />
       <Item
         name={`Storage - Level ${StorageManager.level}`}
-        description={StorageManager.isMaxed() ? "Maxed Out" : `Size: ${StorageManager.capacity} -> ${StorageManager.nextLevelCapacity()}`}
+        description={StorageManager.isMaxed()
+          ? "Maxed Out"
+          : `Size: ${StorageManager.capacity} -> ${StorageManager.nextLevelCapacity()}`}
         price={StorageManager.upgradeCost()}
         disabled={StorageManager.isMaxed()}
         onClick={() => StorageManager.upgrade()}
@@ -36,14 +39,14 @@ export default function Shop() {
         description={`Level: ${autoHarvestLevel}`}
         price={getAutoHarvestUpgradePrice()}
         disabled={true}
-      // onClick={() => upgradeAutoHarvest()}
+        // onClick={() => upgradeAutoHarvest()}
       />
       <Item
         name="Auto Seed"
         description={`Level: ${autoSeederLevel}`}
         price={getAutoSeederUpgradePrice()}
         disabled={true}
-      // onClick={() => upgradeAutoSeed()}
+        // onClick={() => upgradeAutoSeed()}
       />
     </ul>
   );

@@ -4,6 +4,7 @@ import SoldCrops from "../../components/modals/Crops/SoldCrops";
 import StorageFull from "../../components/modals/Crops/StorageFull";
 import NotEnoughCash from "../../components/modals/Upgrades/NotEnoughCash";
 import BankManager from "../bank/Manager";
+import Canvas from "../canvas";
 import { GAMESTATE_KEYS } from "../constants";
 import gameState, { loadGameState } from "../gameState";
 import { Item, ItemType } from "../Item";
@@ -96,7 +97,7 @@ class CropManager {
       TileManager.getTile(x, y).type === TILE_TYPES.DIRT
     ) {
       BankManager.withdraw(this.cropCost());
-      const iso = toIso(x, y);
+      const iso = Canvas.toIso(x, y);
       this._crops.crops.push({
         x,
         y,

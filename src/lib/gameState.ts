@@ -55,9 +55,20 @@ const gameState = new GameState();
 export function loadGameState<T>(
   key: (typeof GAMESTATE_KEYS)[keyof typeof GAMESTATE_KEYS],
   defaultValue?: T,
+  validator?: (value: unknown) => boolean,
 ): T | undefined {
   try {
-    return JSON.parse(localStorage.getItem(key)) ?? defaultValue;
+    const value = JSON.parse(localStorage.getItem(key));
+    if (typeof value === "undefined" || value === null) {
+      return defaultValue;
+    }
+
+    if (validator && !validator(value)) {
+      console.error(`Invalid value for key: ${key}`);
+      return defaultValue;
+    }
+
+    return value;
   } catch (error) {
     console.error(`Error loading game state for key: ${key}`, error);
     return defaultValue;

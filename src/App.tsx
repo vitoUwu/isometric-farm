@@ -3,13 +3,12 @@ import Inventory from "./components/modals/Inventory/index.tsx";
 import Shop from "./components/modals/Shop/index.tsx";
 import { showTutorial } from "./components/modals/Tutorial.tsx";
 import Button from "./components/ui/Button.tsx";
-import { canvas } from "./lib/canvas.ts";
 
 export default function App() {
   return (
     <>
       <div id="loading"></div>
-      <canvas ref={canvas} id="gameCanvas"></canvas>
+      <canvas id="gameCanvas"></canvas>
       <div id="tooltip"></div>
       <div class="btn-container">
         <Button onClick={() => renderModal(<Inventory />)}>Inventory</Button>

@@ -1,4 +1,4 @@
-import { canvas } from "./canvas.js";
+import Canvas from "./canvas.js";
 import { GAMESTATE_KEYS, MOUSE_BUTTONS } from "./constants.ts";
 import gameState, { loadGameState } from "./gameState.ts";
 
@@ -11,6 +11,21 @@ class Camera {
   private _lastMouseX: number = 0;
   private _lastMouseY: number = 0;
   private _buttonDown: number | null = null;
+
+  constructor() {
+    document.addEventListener("keydown", (e) => {
+      const speed = 10;
+      if (e.key === "ArrowUp") {
+        this.cameraY -= speed;
+      } else if (e.key === "ArrowDown") {
+        this.cameraY += speed;
+      } else if (e.key === "ArrowLeft") {
+        this.cameraX -= speed;
+      } else if (e.key === "ArrowRight") {
+        this.cameraX += speed;
+      }
+    });
+  }
 
   get buttonDown() {
     return this._buttonDown;
@@ -72,7 +87,7 @@ class Camera {
     const scale = this._scale;
     const cameraX = this._cameraX;
 
-    const rect = canvas.current!.getBoundingClientRect();
+    const rect = Canvas.canvas.getBoundingClientRect();
     return (clientX - rect.left) / scale + cameraX;
   }
 
@@ -80,7 +95,7 @@ class Camera {
     const scale = this._scale;
     const cameraY = this._cameraY;
 
-    const rect = canvas.current!.getBoundingClientRect();
+    const rect = Canvas.canvas.getBoundingClientRect();
     return (clientY - rect.top) / scale + cameraY;
   }
 
