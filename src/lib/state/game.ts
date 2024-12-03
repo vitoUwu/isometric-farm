@@ -19,7 +19,9 @@ class GameState {
     // avoid circular dependency
     if (!this._importedModulesCache.TilesManager) {
       const { default: TilesManager } = await import("../tiles/Manager.ts");
-      const { default: InventoryManager } = await import("../inventory/Manager.ts");
+      const { default: InventoryManager } = await import(
+        "../inventory/Manager.ts"
+      );
       const { default: CropManager } = await import("../crops/Manager.ts");
       const { default: BankManager } = await import("../bank/Manager.ts");
       const { default: Camera } = await import("../camera.ts");

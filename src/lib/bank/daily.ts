@@ -16,7 +16,10 @@ class Daily {
     }
 
     this._lastClaimed = GameState.loadGameState(GAMESTATE_KEYS.DAILY, 0);
-    logger.debug("Daily", { lastClaimed: this._lastClaimed, isClaimable: this.isDailyClaimable() });
+    logger.debug("Daily", {
+      lastClaimed: this._lastClaimed,
+      isClaimable: this.isDailyClaimable(),
+    });
     this.startTimeout();
   }
 
@@ -52,7 +55,10 @@ class Daily {
 
   public save() {
     logger.debug("Daily saving", { lastClaimed: this._lastClaimed });
-    localStorage.setItem(GAMESTATE_KEYS.DAILY, JSON.stringify(this._lastClaimed));
+    localStorage.setItem(
+      GAMESTATE_KEYS.DAILY,
+      JSON.stringify(this._lastClaimed),
+    );
   }
 
   private getDiff() {

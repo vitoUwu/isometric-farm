@@ -30,7 +30,7 @@ export default function DailyButton() {
       disabled={!Daily.isDailyClaimable()}
       onClick={() => {
         Daily.tryClaimReward();
-        renderModal(DailyModal())
+        renderModal(DailyModal());
       }}
     >
       <Span>☀️</Span>

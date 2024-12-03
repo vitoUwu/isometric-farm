@@ -77,7 +77,10 @@ class InventoryManager {
   save(): void {
     logger.debug(`Saving inventory`);
     logger.debug(this._inventory);
-    localStorage.setItem(GAMESTATE_KEYS.INVENTORY, JSON.stringify(this._inventory));
+    localStorage.setItem(
+      GAMESTATE_KEYS.INVENTORY,
+      JSON.stringify(this._inventory),
+    );
     this.updateCapacityDisplay();
   }
 
