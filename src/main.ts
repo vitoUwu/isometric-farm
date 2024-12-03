@@ -2,6 +2,9 @@ import logger from "./lib/logger.ts";
 logger.debug("Debugging is enabled");
 logger.time("Game Loading time");
 
+import migrate from "./lib/state/migrate.ts";
+migrate();
+
 import App from "./App.tsx";
 import BankManager from "./lib/bank/Manager.ts";
 import Canvas from "./lib/canvas.ts";

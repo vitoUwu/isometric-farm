@@ -33,6 +33,7 @@ export class Logger {
       "background-color: red; color: white; padding: 2px;font-weight: bold",
       ...messages,
     );
+    console.trace();
   }
 
   warn(...messages: any[]) {

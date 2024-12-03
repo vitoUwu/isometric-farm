@@ -6,6 +6,7 @@ export const GAMESTATE_KEYS = {
   AUTO_HARVEST_LEVEL: "autoHarvestLevel",
   AUTO_SEEDER_LEVEL: "autoSeederLevel",
   CAMERA: "camera",
+  VERSION: "version",
 } as const;
 
 export const DELETE_KEYS = {
@@ -29,6 +30,11 @@ export const MOUSE_BUTTONS = {
 export const ACTIONS = {
   PLANTING: "planting",
   HARVESTING: "harvesting",
+} as const;
+
+export const VERSION = "1.0.0";
+export const MIGRATION_FLOW = {
+  undefined: "1.0.0", // Is this a good practice? 😂
 } as const;
 
 export const TILE_WIDTH = 64;
