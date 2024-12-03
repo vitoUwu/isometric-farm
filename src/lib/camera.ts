@@ -1,6 +1,6 @@
 import Canvas from "./canvas.js";
 import { GAMESTATE_KEYS, MOUSE_BUTTONS } from "./constants.ts";
-import GameState from "./gameState.ts";
+import GameState from "./state/game.ts";
 
 let _instance: Camera;
 

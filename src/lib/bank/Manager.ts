@@ -1,5 +1,5 @@
 import { GAMESTATE_KEYS } from "../constants";
-import GameState from "../gameState";
+import GameState from "../state/game";
 import logger from "../logger";
 
 interface Bank {

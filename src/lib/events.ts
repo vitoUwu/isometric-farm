@@ -1,6 +1,6 @@
 import Camera from "./camera.ts";
 import Canvas from "./canvas.ts";
-import GameState from "./gameState.ts";
+import GameState from "./state/game.ts";
 import logger from "./logger.ts";
 
 let _instance: Events;

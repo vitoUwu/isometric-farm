@@ -6,7 +6,7 @@ import NotEnoughCash from "../../components/modals/Upgrades/NotEnoughCash";
 import BankManager from "../bank/Manager";
 import Canvas from "../canvas";
 import { GAMESTATE_KEYS } from "../constants";
-import GameState from "../gameState";
+import GameState from "../state/game";
 import { Item, ItemType } from "../Item";
 import logger from "../logger";
 import StorageManager from "../storage/Manager";

@@ -10,7 +10,7 @@ import {
   TILE_WIDTH,
 } from "./constants.ts";
 import CropManager from "./crops/Manager.ts";
-import GameState from "./gameState.ts";
+import GameState from "./state/game.ts";
 import imageLoader from "./ImageLoader.ts";
 import logger from "./logger.ts";
 // import { getRobotById } from "./robots/index.js";

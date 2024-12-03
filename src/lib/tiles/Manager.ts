@@ -3,7 +3,7 @@ import { closeModal, renderModal } from "../../components/modals/index.tsx";
 import BankManager from "../bank/Manager.ts";
 import { GAMESTATE_KEYS, GRID_SIZE } from "../constants.ts";
 import CropManager from "../crops/Manager.ts";
-import GameState from "../gameState.ts";
+import GameState from "../state/game.ts";
 import logger from "../logger.ts";
 import { TILES } from "./constants.ts";
 

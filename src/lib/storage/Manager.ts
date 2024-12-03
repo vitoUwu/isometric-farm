@@ -3,7 +3,7 @@ import NotEnoughCash from "../../components/modals/Upgrades/NotEnoughCash";
 import StorageLevelUpgraded from "../../components/modals/Upgrades/StorageLevelUpgraded";
 import BankManager from "../bank/Manager";
 import { GAMESTATE_KEYS } from "../constants";
-import GameState from "../gameState";
+import GameState from "../state/game";
 import { Item } from "../Item";
 import logger from "../logger";
 

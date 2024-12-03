@@ -7,8 +7,8 @@ import {
   TILE_WIDTH,
 } from "./constants.js";
 import CropManager from "./crops/Manager";
-import GameState from "./gameState.ts";
-import { TILE_TYPES } from "./tiles/constants";
+import GameState from "./state/game.ts";
+import { TILE_TYPES } from "./tiles/constants.ts";
 import TileManager from "./tiles/Manager";
 
 export function updateTooltip() {

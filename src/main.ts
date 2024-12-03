@@ -9,7 +9,7 @@ import App from "./App.tsx";
 import BankManager from "./lib/bank/Manager.ts";
 import Canvas from "./lib/canvas.ts";
 import Events from "./lib/events.ts";
-import GameState from "./lib/gameState.ts";
+import GameState from "./lib/state/game.ts";
 import ImageLoader from "./lib/ImageLoader.ts";
 import StorageManager from "./lib/storage/Manager.ts";
 import { updateTooltip } from "./lib/tooltip.ts";
