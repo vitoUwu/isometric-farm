@@ -258,7 +258,11 @@ body:has([data-modal-open="true"]) .backdrop {
     0 -1px 1px #ff4d4d;
 }
 
-.btn:hover {
+.btn:disabled {
+  filter: brightness(0.5);
+}
+
+.btn:hover:not(:disabled) {
   filter: brightness(1.1);
 }
 

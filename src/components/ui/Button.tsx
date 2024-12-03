@@ -1,14 +1,20 @@
-import type { HTMLAttributes } from "jsx-dom";
+import { HTMLAttributes } from "jsx-dom";
 
-interface Props extends HTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "success" | "danger";
+export type ButtonVariant = "primary" | "success" | "danger";
+
+export interface Props extends HTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant;
   disabled?: boolean;
 }
 
 export default function Button(
-  { variant = "primary", class: className, ...props }: Props,
+  { variant = "primary", class: className, disabled, ...props }: Props,
 ) {
   return (
-    <button class={`btn btn-${variant} ${className || ""}`.trim()} {...props} />
+    <button
+      class={`btn btn-${variant} ${className || ""}`.trim()}
+      {...props}
+      disabled={disabled}
+    />
   );
 }

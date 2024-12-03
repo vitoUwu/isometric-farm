@@ -11,7 +11,7 @@ import Canvas from "./lib/canvas.ts";
 import Events from "./lib/events.ts";
 import GameState from "./lib/state/game.ts";
 import ImageLoader from "./lib/ImageLoader.ts";
-import StorageManager from "./lib/storage/Manager.ts";
+import InventoryManager from "./lib/inventory/Manager.ts";
 import { updateTooltip } from "./lib/tooltip.ts";
 import "./styles.css";
 
@@ -20,7 +20,7 @@ document.querySelector("#app")!.appendChild(App());
 document.addEventListener("DOMContentLoaded", async () => {
   logger.debug("DOMContentLoaded");
   await ImageLoader.loadImages();
-  StorageManager.updateCapacityDisplay();
+  InventoryManager.updateCapacityDisplay();
   BankManager.updateBalanceDisplay();
 
   const canvas = document.getElementById("gameCanvas") as HTMLCanvasElement;

@@ -1,12 +1,13 @@
 export const GAMESTATE_KEYS = {
   CROPS: "crops",
-  STORAGE: "storage",
+  INVENTORY: "inventory",
   BANK: "bank",
   TILES: "tiles",
   AUTO_HARVEST_LEVEL: "autoHarvestLevel",
   AUTO_SEEDER_LEVEL: "autoSeederLevel",
   CAMERA: "camera",
   VERSION: "version",
+  DAILY: "daily",
 } as const;
 
 export const DELETE_KEYS = {
@@ -32,9 +33,10 @@ export const ACTIONS = {
   HARVESTING: "harvesting",
 } as const;
 
-export const VERSION = "1.0.0";
+export const VERSION = "1.0.1";
 export const MIGRATION_FLOW = {
   undefined: "1.0.0", // Is this a good practice? 😂
+  "1.0.0": "1.0.1",
 } as const;
 
 export const TILE_WIDTH = 64;

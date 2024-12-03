@@ -197,8 +197,6 @@ class Canvas {
   }
 
   handleTileClick(e: MouseEvent) {
-    GameState.updateMouseState(e);
-
     // if (e.button === MOUSE_BUTTONS.right) {
     //   const user = getRobotById(USER_ID);
     //   if (user) {

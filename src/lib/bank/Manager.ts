@@ -54,16 +54,19 @@ class BankManager {
   withdraw(amount: number) {
     this._bank.balance -= amount;
     this.updateBalanceDisplay();
+    this.save();
   }
 
   deposit(amount: number) {
     this._bank.balance += amount;
     this.updateBalanceDisplay();
+    this.save();
   }
 
   reset() {
     this._bank.balance = 0;
     this.updateBalanceDisplay();
+    this.save();
   }
 
   save() {

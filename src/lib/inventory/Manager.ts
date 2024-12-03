@@ -7,32 +7,34 @@ import GameState from "../state/game";
 import { Item } from "../Item";
 import logger from "../logger";
 
-interface StorageItem {
+interface InventoryItem {
   data: Item;
   quantity: number;
 }
 
-interface StorageObject {
+interface InventoryObject {
   level: number;
-  items: Record<string, StorageItem>;
+  items: Record<string, InventoryItem>;
 }
 
-let _instance: StorageManager;
+let _instance: InventoryManager;
 
-class StorageManager {
-  private _storage: StorageObject;
+class InventoryManager {
+  private _inventory: InventoryObject;
   private static MAX_LEVEL = 27;
 
   constructor() {
     if (_instance) {
       throw new Error(
-        "Attempted to create a second instance of StorageManager",
+        "Attempted to create a second instance of InventoryManager",
       );
     }
-    this._storage = GameState.loadGameState(GAMESTATE_KEYS.STORAGE, {
+    this._inventory = GameState.loadGameState(GAMESTATE_KEYS.INVENTORY, {
       level: 1,
       items: {},
     });
+    logger.debug(`Loaded inventory`);
+    logger.debug(this._inventory);
   }
 
   get capacityDisplay() {
@@ -40,7 +42,7 @@ class StorageManager {
   }
 
   private calculateCapacity(level?: number) {
-    level = level ?? this._storage.level;
+    level = level ?? this._inventory.level;
     return level * 10;
   }
 
@@ -51,7 +53,7 @@ class StorageManager {
   updateCapacityDisplay() {
     const display = this.capacityDisplay;
     if (!display) {
-      return logger.error("Storage capacity display not found");
+      return logger.error("Inventory capacity display not found");
     }
 
     const totalStoredItems = this.getTotalStoredItems();
@@ -64,52 +66,61 @@ class StorageManager {
   }
 
   static getInstance() {
-    logger.time("StorageManager.getInstance");
+    logger.time("InventoryManager.getInstance");
     if (!_instance) {
-      _instance = new StorageManager();
+      _instance = new InventoryManager();
     }
-    logger.timeEnd("StorageManager.getInstance");
+    logger.timeEnd("InventoryManager.getInstance");
     return _instance;
   }
 
   save(): void {
-    localStorage.setItem(GAMESTATE_KEYS.STORAGE, JSON.stringify(this._storage));
+    logger.debug(`Saving inventory`);
+    logger.debug(this._inventory);
+    localStorage.setItem(GAMESTATE_KEYS.INVENTORY, JSON.stringify(this._inventory));
     this.updateCapacityDisplay();
   }
 
-  getItem(id: string): StorageItem | undefined {
-    return this._storage.items[id];
+  getItem(id: string): InventoryItem | undefined {
+    return this._inventory.items[id];
   }
 
   hasItem(id: string): boolean {
-    return !!this._storage.items[id];
+    return !!this._inventory.items[id];
   }
 
   getTotalStoredItems(): number {
-    return Object.values(this._storage.items).reduce(
+    return Object.values(this._inventory.items).reduce(
       (acc, item) => acc + item.quantity,
       0,
     );
   }
 
-  willFit(arg: number | StorageItem): boolean {
+  willFit(arg: number | InventoryItem): boolean {
     const quantity = typeof arg === "number" ? arg : arg.quantity;
     return this.getTotalStoredItems() + quantity <= this.capacity;
   }
 
-  storeItem(item: StorageItem) {
+  storeItem(item: InventoryItem) {
     if (!this.willFit(item)) {
       return logger.error(`Item ${item.data.id} will not fit in storage`);
     }
 
+    logger.debug(`Storing item ${item.data.id} with quantity ${item.quantity}`);
+    logger.debug(this._inventory);
+
     if (this.hasItem(item.data.id)) {
-      this._storage.items[item.data.id].quantity += item.quantity;
+      logger.debug(`Item ${item.data.id} already exists, adding quantity`);
+      this._inventory.items[item.data.id].quantity += item.quantity;
       this.updateCapacityDisplay();
+      this.save();
       return;
     }
 
-    this._storage.items[item.data.id] = item;
+    logger.debug(`Item ${item.data.id} does not exist, adding new item`);
+    this._inventory.items[item.data.id] = item;
     this.updateCapacityDisplay();
+    this.save();
   }
 
   removeItem(id: string, quantity: number) {
@@ -117,23 +128,23 @@ class StorageManager {
       return logger.error(`Item ${id} not found in storage`);
     }
 
-    this._storage.items[id].quantity -= quantity;
+    this._inventory.items[id].quantity -= quantity;
 
-    if (this._storage.items[id].quantity <= 0) {
-      delete this._storage.items[id];
+    if (this._inventory.items[id].quantity <= 0) {
+      delete this._inventory.items[id];
     }
 
     this.updateCapacityDisplay();
   }
 
-  getAllItems(): StorageItem[] {
-    return Object.values(this._storage.items);
+  getAllItems(): InventoryItem[] {
+    return Object.values(this._inventory.items);
   }
 
   // UPGRADES
 
   upgradeCost(level?: number) {
-    level = level ?? this._storage.level;
+    level = level ?? this._inventory.level;
     return level * 1000;
   }
 
@@ -143,23 +154,23 @@ class StorageManager {
     }
 
     BankManager.withdraw(this.upgradeCost());
-    this._storage.level++;
+    this._inventory.level++;
     this.save();
 
     renderModal(StorageLevelUpgraded());
   }
 
   get level() {
-    return this._storage.level;
+    return this._inventory.level;
   }
 
   nextLevelCapacity() {
-    return this.calculateCapacity(this._storage.level + 1);
+    return this.calculateCapacity(this._inventory.level + 1);
   }
 
   isMaxed() {
-    return this.level >= StorageManager.MAX_LEVEL;
+    return this.level >= InventoryManager.MAX_LEVEL;
   }
 }
 
-export default StorageManager.getInstance();
+export default InventoryManager.getInstance();

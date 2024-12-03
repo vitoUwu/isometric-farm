@@ -9,7 +9,7 @@ import { GAMESTATE_KEYS } from "../constants";
 import GameState from "../state/game";
 import { Item, ItemType } from "../Item";
 import logger from "../logger";
-import StorageManager from "../storage/Manager";
+import InventoryManager from "../inventory/Manager.ts";
 import { TILE_TYPES } from "../tiles/constants";
 import TileManager from "../tiles/Manager";
 
@@ -124,7 +124,7 @@ class CropManager {
       return;
     }
 
-    if (!StorageManager.willFit(1)) {
+    if (!InventoryManager.willFit(1)) {
       renderModal(StorageFull());
       GameState.action = null;
       return;
@@ -132,7 +132,7 @@ class CropManager {
 
     this.removeCrop(crop.index);
 
-    StorageManager.storeItem({
+    InventoryManager.storeItem({
       data: crop.drop,
       quantity: 1,
     });
@@ -201,7 +201,7 @@ class CropManager {
   }
 
   sellCrops() {
-    const crops = StorageManager.getAllItems().filter((item) =>
+    const crops = InventoryManager.getAllItems().filter((item) =>
       item.data.type === ItemType.CROP
     );
     let quantity = 0;
@@ -214,11 +214,11 @@ class CropManager {
       quantity += _quantity;
       price += _price;
 
-      StorageManager.removeItem(crop.data.id, _quantity);
+      InventoryManager.removeItem(crop.data.id, _quantity);
       BankManager.deposit(_price);
     }
 
-    StorageManager.save();
+    InventoryManager.save();
     BankManager.save();
 
     renderModal(SoldCrops({ quantity, price }));

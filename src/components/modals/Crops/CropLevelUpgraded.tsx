@@ -1,6 +1,7 @@
-import { closeModal } from "..";
+import { renderModal } from "..";
 import CropManager from "../../../lib/crops/Manager.ts";
 import Button from "../../ui/Button";
+import Shop from "../Shop/index.tsx";
 
 export default function CropLevelUpgraded() {
   return (
@@ -13,7 +14,7 @@ export default function CropLevelUpgraded() {
       <Button
         variant="success"
         style="margin-top: 12px"
-        onClick={() => closeModal()}
+        onClick={() => renderModal(Shop())}
       >
         Yay!
       </Button>

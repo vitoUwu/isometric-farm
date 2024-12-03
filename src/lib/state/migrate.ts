@@ -26,25 +26,49 @@ export default function migrate() {
 
   switch (nextVersion) {
     case MIGRATION_FLOW.undefined:
-      const cameraX = localStorage.getItem("cameraX");
-      const cameraY = localStorage.getItem("cameraY");
-      const cash = localStorage.getItem("cash");
-      const scale = localStorage.getItem("scale");
-      const tilesLevel = localStorage.getItem("tilesLevel");
+      const cameraX = localStorage.getItem("cameraX") || 0;
+      const cameraY = localStorage.getItem("cameraY") || 0;
+      const cash = localStorage.getItem("cash") || 1000;
+      const scale = localStorage.getItem("scale") || 1;
+      const tilesLevel = localStorage.getItem("tilesLevel") || 1;
 
       localStorage.clear();
 
-      setItem(GAMESTATE_KEYS.CAMERA, { cameraX, cameraY, scale });
-      setItem(GAMESTATE_KEYS.BANK, { balance: cash });
-      setItem(GAMESTATE_KEYS.CROPS, { crops: [], level: 1 });
-      setItem(GAMESTATE_KEYS.STORAGE, { items: [], level: 1 });
-      setItem(GAMESTATE_KEYS.TILES, { fieldLevel: Number(tilesLevel) });
-      setItem(GAMESTATE_KEYS.VERSION, nextVersion);
+      setItem("camera", { cameraX, cameraY, scale });
+      setItem("bank", { balance: cash });
+      setItem("crops", { crops: [], level: 1 });
+      setItem("inventory", { items: {}, level: 1 });
+      setItem("tiles", { fieldLevel: Number(tilesLevel) });
+      setItem("version", nextVersion);
       setItem("debug", debug);
       setItem("dev", dev);
-      setTimeout(() => {
-        window.location.reload();
-      }, 0);
+      window.location.reload();
+      break;
+    case MIGRATION_FLOW["1.0.0"]:
+      const storage = localStorage.getItem("storage");
+
+      if (storage) {
+        try {
+          const parsed = JSON.parse(storage);
+          if (Array.isArray(parsed.items)) {
+            parsed.items = parsed.items.reduce((acc, item) => {
+              acc[item.id] = item;
+              return acc;
+            }, {} as Record<string, unknown>);
+          }
+          setItem("inventory", parsed);
+        } catch (error) {
+          logger.error("Error parsing storage", error);
+          setItem("inventory", { items: {}, level: 1 });
+        }
+      } else {
+        setItem("inventory", { items: {}, level: 1 });
+      }
+
+      setItem("version", nextVersion);
+
+      localStorage.removeItem("storage");
+      window.location.reload();
       break;
     default:
       logger.error("Unknown migration version", nextVersion);

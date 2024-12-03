@@ -45,6 +45,10 @@ class Events {
       GameState.resetMouseState();
     });
 
+    window.addEventListener("mouseup", () => {
+      GameState.resetMouseState();
+    });
+
     canvas.addEventListener("wheel", (e) => {
       Camera.applyZoom(e);
     });

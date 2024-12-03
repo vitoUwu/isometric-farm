@@ -1,5 +1,5 @@
 import CropManager from "../../../lib/crops/Manager.ts";
-import StorageManager from "../../../lib/storage/Manager.ts";
+import InventoryManager from "../../../lib/inventory/Manager.ts";
 import Item from "./Item.tsx";
 
 export default function Shop() {
@@ -20,13 +20,13 @@ export default function Shop() {
         onClick={() => CropManager.upgrade()}
       />
       <Item
-        name={`Storage - Level ${StorageManager.level}`}
-        description={StorageManager.isMaxed()
+        name={`Storage - Level ${InventoryManager.level}`}
+        description={InventoryManager.isMaxed()
           ? "Maxed Out"
-          : `Size: ${StorageManager.capacity} -> ${StorageManager.nextLevelCapacity()}`}
-        price={StorageManager.upgradeCost()}
-        disabled={StorageManager.isMaxed()}
-        onClick={() => StorageManager.upgrade()}
+          : `Size: ${InventoryManager.capacity} -> ${InventoryManager.nextLevelCapacity()}`}
+        price={InventoryManager.upgradeCost()}
+        disabled={InventoryManager.isMaxed()}
+        onClick={() => InventoryManager.upgrade()}
       />
       <Item
         name="Auto Harvest"

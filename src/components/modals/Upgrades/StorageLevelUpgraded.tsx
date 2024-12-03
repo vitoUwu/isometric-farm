@@ -1,5 +1,5 @@
 import { renderModal } from "..";
-import StorageManager from "../../../lib/storage/Manager.ts";
+import InventoryManager from "../../../lib/inventory/Manager.ts";
 import Button from "../../ui/Button";
 import Shop from "../Shop/index.tsx";
 
@@ -8,8 +8,8 @@ export default function StorageLevelUpgraded() {
     <>
       <h1>Storage Level Upgraded</h1>
       <p>Now, you can store more crops!</p>
-      <p>Storage level: {StorageManager.level}</p>
-      <p>Capacity: {StorageManager.capacity}</p>
+      <p>Storage level: {InventoryManager.level}</p>
+      <p>Capacity: {InventoryManager.capacity}</p>
       <Button
         variant="success"
         style="margin-top: 12px"
