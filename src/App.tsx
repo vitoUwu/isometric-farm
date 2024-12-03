@@ -22,7 +22,7 @@ export default function App() {
       </div>
       <div class="info-container">
         <p>
-          🪙 <span id="cash-display"></span>
+          🪙 <span id="cash-display">$</span>
         </p>
         <p>
           📦 <span id="storage-display"></span>

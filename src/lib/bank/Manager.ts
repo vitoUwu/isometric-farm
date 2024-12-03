@@ -8,12 +8,6 @@ interface Bank {
 
 let _instance: BankManager;
 
-const balanceFormatter = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0,
-});
-
 class BankManager {
   private _bank: Bank;
 
@@ -44,7 +38,7 @@ class BankManager {
     if (!display) {
       return logger.error("Bank balance display not found");
     }
-    display.textContent = balanceFormatter.format(this.balance);
+    display.style.setProperty("--cash", this.balance.toString());
   }
 
   get balance() {

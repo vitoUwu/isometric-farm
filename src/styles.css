@@ -269,3 +269,18 @@ body:has([data-modal-open="true"]) .backdrop {
 .btn:active {
   transform: scale(0.95);
 }
+
+@property --cash {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+#cash-display {
+  transition: --cash 1s;
+  counter-reset: num var(--cash);
+}
+
+#cash-display::after {
+  content: counter(num);
+}
