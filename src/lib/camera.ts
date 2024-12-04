@@ -14,11 +14,16 @@ class Camera {
       throw new Error("Camera already initialized");
     }
 
-    const data = GameState.loadGameState(GAMESTATE_KEYS.CAMERA, {
-      cameraX: 0,
-      cameraY: 0,
-      scale: 1,
-    }, Camera.validateState);
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    const defaultPosition = {
+      cameraX: -(screenWidth / 4),
+      cameraY: -(screenHeight / 8),
+      scale: screenWidth < 768 ? 1.2 : 1.5,
+    };
+
+    const data = GameState.loadGameState(GAMESTATE_KEYS.CAMERA, defaultPosition, Camera.validateState);
 
     this.cameraX = data.cameraX;
     this.cameraY = data.cameraY;
@@ -96,11 +101,24 @@ class Camera {
   applyZoom(e: WheelEvent) {
     e.preventDefault();
     const zoomSpeed = 0.1;
+    const oldScale = this.scale;
+
     if (e.deltaY < 0) {
       this.scale *= 1 + zoomSpeed;
     } else {
       this.scale /= 1 + zoomSpeed;
     }
+
+    const rect = Canvas.canvas.getBoundingClientRect();
+    
+    const mouseXBeforeZoom = (e.clientX - rect.left) / oldScale + this.cameraX;
+    const mouseYBeforeZoom = (e.clientY - rect.top) / oldScale + this.cameraY;
+
+    const mouseXAfterZoom = (e.clientX - rect.left) / this.scale + this.cameraX;
+    const mouseYAfterZoom = (e.clientY - rect.top) / this.scale + this.cameraY;
+
+    this.cameraX += mouseXBeforeZoom - mouseXAfterZoom;
+    this.cameraY += mouseYBeforeZoom - mouseYAfterZoom;
   }
 
   save() {

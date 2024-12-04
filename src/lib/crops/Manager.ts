@@ -6,10 +6,12 @@ import NotEnoughCash from "../../components/modals/Upgrades/NotEnoughCash";
 import BankManager from "../bank/Manager";
 import Canvas from "../canvas";
 import { GAMESTATE_KEYS } from "../constants";
-import GameState from "../state/game";
+import EffectManager from "../effects/Manager.ts";
+import { fadeOutSlideUp, TextEffect } from "../effects/text.ts";
+import InventoryManager from "../inventory/Manager.ts";
 import { Item, ItemType } from "../Item";
 import logger from "../logger";
-import InventoryManager from "../inventory/Manager.ts";
+import GameState from "../state/game";
 import { TILE_TYPES } from "../tiles/constants";
 import TileManager from "../tiles/Manager";
 
@@ -114,6 +116,7 @@ class CropManager {
         ),
         plantedAt: Date.now(),
       });
+      this.save();
     }
   }
 
@@ -136,6 +139,18 @@ class CropManager {
       data: crop.drop,
       quantity: 1,
     });
+
+    EffectManager.addEffect(
+      new TextEffect({
+        x: crop.isoX,
+        y: crop.isoY,
+        text: "+1 🌾",
+        duration: 1000,
+        fontSize: 20,
+        followCamera: true,
+        updateFn: fadeOutSlideUp,
+      }),
+    );
   }
 
   setReadyToHarvest(x: number, y: number) {

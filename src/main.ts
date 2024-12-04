@@ -8,10 +8,11 @@ migrate();
 import App from "./App.tsx";
 import BankManager from "./lib/bank/Manager.ts";
 import Canvas from "./lib/canvas.ts";
+import EffectManager from "./lib/effects/Manager.ts";
 import Events from "./lib/events.ts";
-import GameState from "./lib/state/game.ts";
 import ImageLoader from "./lib/ImageLoader.ts";
 import InventoryManager from "./lib/inventory/Manager.ts";
+import GameState from "./lib/state/game.ts";
 import { updateTooltip } from "./lib/tooltip.ts";
 import "./styles.css";
 
@@ -37,18 +38,42 @@ document.addEventListener("DOMContentLoaded", async () => {
   logger.timeEnd("Game Loading time");
 });
 
+let lastFrameTime = performance.now();
+let frameCount = 0;
+let fps = 0;
+let lastFpsUpdateTime = performance.now();
+
 function gameLoop() {
+  const currentFrameTime = performance.now();
+  const deltaTime = currentFrameTime - lastFrameTime;
+  lastFrameTime = currentFrameTime;
+
+  if (logger._debug) {
+    frameCount++;
+
+    // Update FPS every second
+    if (currentFrameTime - lastFpsUpdateTime >= 1000) {
+      fps = frameCount;
+      frameCount = 0;
+      lastFpsUpdateTime = currentFrameTime;
+    }
+  }
+
   if (!Canvas.ctx) {
     throw new Error("Canvas context not found. You forgot to set the canvas?");
   }
   Canvas.ctx.clearRect(0, 0, Canvas.canvas.width, Canvas.canvas.height);
   Canvas.drawGrid();
   updateTooltip();
-  // if (secondsTillNextHarvest === 0 && hasMatureCrop() && storage.length < maxStorageCapacity) {
-  //   autoHarvest();
-  // }
-  // if (secondsTillNextSeed === 0 && canSeed()) {
-  //   autoSeed();
-  // }
+
+  EffectManager.update(deltaTime);
+  EffectManager.render(Canvas.ctx);
+
+  if (logger._debug) {
+    Canvas.ctx.fillStyle = "white";
+    Canvas.ctx.font = "16px Arial";
+    Canvas.ctx.fillText(`FPS: ${fps}`, 500, 20);
+  }
+
   requestAnimationFrame(gameLoop);
 }

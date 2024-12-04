@@ -1,7 +1,7 @@
 let _instance: Logger;
 
 export class Logger {
-  private _debug = false;
+  public _debug = false;
   constructor() {
     if (_instance) {
       throw new Error("Logger is already instantiated");
